@@ -1,2 +1,3 @@
 node_modules
 .aya.db
+app/dist/bundle.css
