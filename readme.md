@@ -1,10 +1,6 @@
 # Are you around?
 
-Let your friends know if you are around! Publish your status so friends can subscribe.
-
-Electron app that uses a [hypercore](https://github.com/mafintosh/hypercore). to manage your status updates. All status updates are sent directly to your friends via peer to peer networks.
-
-Your status updates are saved in a local level database, `.aya.db` (aya = are you around). If you delete the database your account name & key will be reset.
+Let your friends know if you are around! Publish your status so friends can subscribe. All status updates are sent directly to your friends via peer to peer networks.
 
 Development Status: **Very unstable.**
 
@@ -28,6 +24,8 @@ Built with these awesome tools:
 
 Run `npm run start:dev` to run in development mode and watch file changes.
 
+Status updates are saved in a local level database, `.aya.db` (aya = are you around). If you delete the database your account name & key will be reset.
+
 ## TODO
 
 * Make feeds download only
@@ -36,6 +34,7 @@ Run `npm run start:dev` to run in development mode and watch file changes.
 * Change status to offline on exit
 * Nicer UI (thinking two tab panes, one for friends and one user)
 * Add dates to status and show last update time
+* Make status updates "tweets" and change "subscribe" to "follow".
 
 ## License
 
