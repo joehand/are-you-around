@@ -44,7 +44,6 @@ module.exports = (state, prev, send) => {
 
     function onSubmit (e) {
       const input = e.target.children[1]
-      console.log('here', e.target.children)
       send('user:updateStatus', { message: input.value, status: state.user.status })
       e.preventDefault()
     }

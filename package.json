@@ -6,8 +6,8 @@
   "scripts": {
     "start": "npm run watch & NODE_ENV=development electron .",
     "test": "standard",
-    "build": "browserify app/index.js -p [ css-extract -o app/dist/bundle.css ] -o /dev/null",
-    "watch": "watchify app/index.js -p [ css-extract -o app/dist/bundle.css ] -o /dev/null",
+    "build": "browserify app/index.js -p [ css-extract -o app/bundle.css ] -o /dev/null",
+    "watch": "watchify app/index.js -p [ css-extract -o app/bundle.css ] -o /dev/null",
     "rebuild": "npm rebuild --runtime=electron --target=1.3.4 --disturl=https://atom.io/download/atom-shell --build-from-source"
   },
   "browserify": {
