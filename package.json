@@ -1,0 +1,41 @@
+{
+  "name": "are-you-around",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run watch & NODE_ENV=development electron .",
+    "test": "standard",
+    "build": "browserify app/index.js -p [ css-extract -o app/dist/bundle.css ] -o /dev/null",
+    "watch": "watchify app/index.js -p [ css-extract -o app/dist/bundle.css ] -o /dev/null",
+    "rebuild": "npm rebuild --runtime=electron --target=1.3.4 --disturl=https://atom.io/download/atom-shell --build-from-source"
+  },
+  "browserify": {
+    "transform": [
+      "sheetify/transform"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joehand/are-you-around.git"
+  },
+  "author": "Joe Hand <joe@hand.email> (https://joeahand.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joehand/are-you-around/issues"
+  },
+  "homepage": "https://github.com/joehand/are-you-around#readme",
+  "dependencies": {
+    "choo": "^3.2.2",
+    "electron-prebuilt": "^1.3.4",
+    "hypercore": "^4.9.0",
+    "hyperdrive-archive-swarm": "^4.0.0",
+    "level": "^1.4.0",
+    "sheetify": "^5.1.0",
+    "tachyons": "^4.1.2"
+  },
+  "devDependencies": {
+    "css-extract": "^1.1.2",
+    "watchify": "^3.7.0"
+  }
+}
