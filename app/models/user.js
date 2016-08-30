@@ -42,7 +42,10 @@ module.exports = {
       console.log('createNew', data)
       state.feed.append(data.name, () => {
         console.log('done append', state)
-        send('user:receiveName', data.name, done)
+        send('user:receiveName', data.name, () => {
+          // put new users online
+          send('user:updateStatus', {status: 'online'}, done)
+        })
       })
     },
     readFeed: (data, state, send, done) => {
