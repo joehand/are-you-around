@@ -1,15 +1,12 @@
 const choo = require('choo')
 const html = require('choo/html')
 const css = require('sheetify')
-const level = require('level')
-const hypercore = require('hypercore')
-const swarm = require('hyperdrive-archive-swarm')
+const PeerStatus = require('peer-status-feed')
 
 const friends = require('./components/friends')
 const user = require('./components/user')
 
-const db = level('.aya.db')
-const core = hypercore(db)
+const userFeed = PeerStatus()
 
 css('tachyons')
 css('./style', {global: true})
@@ -18,56 +15,29 @@ const app = choo()
 app.model({
   effects: {
     initDb: (data, state, send, done) => {
-      db.get('!aya!!user', (_, key) => {
-        const newUser = key ? false : true
-        const feed = core.createFeed(key)
-        const sw = swarm(feed)
+      userFeed.open(function () {
+        send('user:receiveKey', userFeed.key, () => {
+          if (!userFeed.status) return send('user:newUser', null, done)
 
-        if (!newUser) return feed.open(sendData)
-        db.put('!aya!!user', feed.key.toString('hex'), sendData)
-
-        function sendData () {
-          const userData = {newUser: newUser, key: feed.key.toString('hex'), feed: feed, swarm: sw}
-          if (userData.newUser) return send('user:newUser', userData, done)
-          send('user:readFeed', userData, done)
-        }
+          send('user:receiveName', userFeed.status.name, () => {
+            send('user:receiveStatus', userFeed.status, done)
+          })
+        })
       })
     },
-    createFriendFeed: (data, state, send, done) => {
-      const feed = core.createFeed(data)
-      const sw = swarm(feed)
-      db.put('!aya!!friends', data)
-      sw.on('connection', function () {
-        console.log('swarm connection')
-        onConnection()
-      })
-
-      function onConnection () {
-        // send('', {key:key, feed: feed}, done)
-        feed.get(0, function (err, name) {
-           feed.createReadStream({live: true, start: feed.blocks - 1})
-            .on('data', function (data) {
-              // TODO: make this a subscription per friend?
-              if (feed.blocks === 1) return done() // Dont add if we dont have a status
-              const status = JSON.parse(data.toString())
-              send('group:receiveFriend', {
-                name: name.toString(),
-                message: status.message,
-                status: status.status,
-                key: feed.key.toString('hex')
-              }, done)
-            })
-        })
-      }
+    appendStatus: (data, state, send, done) => {
+      data.timestamp = new Date()
+      if (!data.name) data.name = state.user.name
+      userFeed.appendStatus(data, done)
+    },
+    addFriendFeed: (data, state, send, done) => {
+      userFeed.addPeer(data, done)
     }
   },
   subscriptions: [
     (send, done) => {
-      db.createReadStream({
-        gte: '!aya!!friends',
-        lte: '!aya!!frz' // how to do less than all !aya!!friends?
-      }).on('data', data => {
-        send('group:addFriend', {key: data.value}, done)
+      userFeed.on('peer-data', function (data) {
+        send('group:friendData', data, done)
       })
     }
   ]

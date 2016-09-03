@@ -12,10 +12,12 @@ module.exports = {
   },
   reducers: {
     receiveFriend: (data, state) => {
+      const key = data.key
+      const status = data.data
       const friends = state.friends
       const loading = state.loading
-      loading.splice(loading.indexOf(data.key), 1)
-      friends[data.key] = { name: data.name, message: data.message, status: data.status }
+      loading.splice(loading.indexOf(key), 1)
+      friends[key] = { name: status.name, message: status.message, status: status.status }
       return { friends: friends, loading: loading}
     },
     loadingFriend: (data, state) => {
@@ -25,8 +27,12 @@ module.exports = {
   effects: {
     addFriend: (data, state, send, done) => {
       send('group:loadingFriend', data.key, () => {
-        send('createFriendFeed', data.key, done)
+        send('addFriendFeed', data.key, done)
       })
+    },
+    friendData: (data, state, send, done) => {
+      console.log('got friend data', data)
+      send('group:receiveFriend', data, done)
     }
   }
 }
